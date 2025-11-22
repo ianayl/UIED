@@ -2,6 +2,7 @@ from os.path import join as pjoin
 import cv2
 import os
 import numpy as np
+import sys
 
 
 def resize_height_by_longest_edge(img_path, resize_length=800):
@@ -47,12 +48,17 @@ if __name__ == '__main__':
         mobile: {'min-grad':4, 'ffl-block':5, 'min-ele-area':50, 'max-word-inline-gap':6, 'max-line-gap':1}
         web   : {'min-grad':3, 'ffl-block':5, 'min-ele-area':25, 'max-word-inline-gap':4, 'max-line-gap':4}
     '''
-    key_params = {'min-grad':10, 'ffl-block':5, 'min-ele-area':50,
+    key_params = {'min-grad':10, 'ffl-block':5, 'min-ele-area':166,
                   'merge-contained-ele':True, 'merge-line-to-paragraph':False, 'remove-bar':True}
 
     # set input image path
-    input_path_img = 'data/input/497.jpg'
-    output_root = 'data/output'
+    # input_path_img = '/home/ian/lib/bin/simonsays/analyzer/test/3.png'
+    # output_root = './'
+    if len(sys.argv) < 3:
+        print("usage: [input_img] [output_root]")
+        exit(1)
+    input_path_img = sys.argv[1]
+    output_root = sys.argv[2]
 
     resized_height = resize_height_by_longest_edge(input_path_img, resize_length=800)
     color_tips()
@@ -75,9 +81,9 @@ if __name__ == '__main__':
         if is_clf:
             classifier = {}
             from cnn.CNN import CNN
-            # classifier['Image'] = CNN('Image')
+            classifier['Image'] = CNN('Image')
             classifier['Elements'] = CNN('Elements')
-            # classifier['Noise'] = CNN('Noise')
+            classifier['Noise'] = CNN('Noise')
         ip.compo_detection(input_path_img, output_root, key_params,
                            classifier=classifier, resize_by_height=resized_height, show=False)
 

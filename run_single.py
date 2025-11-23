@@ -4,6 +4,7 @@ import os
 import numpy as np
 import sys
 
+SHOW = os.getenv("UIED_DEBUG") is not None
 
 def resize_height_by_longest_edge(img_path, resize_length=800):
     org = cv2.imread(img_path)
@@ -71,7 +72,7 @@ if __name__ == '__main__':
     if is_ocr:
         import detect_text.text_detection as text
         os.makedirs(pjoin(output_root, 'ocr'), exist_ok=True)
-        text.text_detection(input_path_img, output_root, show=True, method='google')
+        text.text_detection(input_path_img, output_root, show=SHOW, method='google')
 
     if is_ip:
         import detect_compo.ip_region_proposal as ip
@@ -94,4 +95,4 @@ if __name__ == '__main__':
         compo_path = pjoin(output_root, 'ip', str(name) + '.json')
         ocr_path = pjoin(output_root, 'ocr', str(name) + '.json')
         merge.merge(input_path_img, compo_path, ocr_path, pjoin(output_root, 'merge'),
-                    is_remove_bar=key_params['remove-bar'], is_paragraph=key_params['merge-line-to-paragraph'], show=True)
+                    is_remove_bar=key_params['remove-bar'], is_paragraph=key_params['merge-line-to-paragraph'], show=SHOW)
